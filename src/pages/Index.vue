@@ -1,0 +1,112 @@
+<template>
+  <div class="q-pa-md">
+    <div class="q-pa-md">
+      <div class="row">
+        <div class="col">
+          <q-select rounded outlined v-model="model" :options="options"  @input="val => { getFotos(model) }" label="Seleccione un destino" />
+        </div>
+      </div>
+    </div>
+    <div class="q-pa-md row items-center justify-center" v-if="loading">
+      <q-circular-progress
+        indeterminate
+        size="50px"
+        :thickness="0.22"
+        color="light-blue"
+        track-color="grey-3"
+        class="q-ma-md"
+      />
+    </div>
+
+    <div class="q-pa-md row items-start q-gutter-md" v-show="model">
+      <template v-for="excursion in arrExcursiones">
+        <q-card class="my-card">
+          <q-img
+            :src="excursion.image"
+            basic
+          >
+          </q-img>
+          <q-card-section>
+            {{ excursion.title }}
+          </q-card-section>
+        </q-card>
+      </template>
+    </div>
+    <div class="q-pa-md row items-center justify-center" v-if="model && arrExcursiones.length <= 0">
+      Sin excursiones...
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'PageIndex',
+  data () {
+    return {
+      model: null,
+      options: [],
+      arrDestination: [],
+      arrExcursiones: [],
+      loading: false,
+    }
+  },
+  created () {
+    this.loadData()
+  },
+  methods: {
+    loadData () {
+      this.$axios.get('ports.json')
+        .then((response) => {
+          let arrTmp = new Set()
+          for (const key of response.data) {
+            this.arrDestination.push({
+                name: key.destination,
+                code: key.code
+            })
+            arrTmp.add(key.destination)
+          }
+          this.options = Array.from(arrTmp)
+          this.$nextTick(() => {
+            this.options = this.options.sort()
+          })
+        })
+        .catch(() => {
+          console.log('error')
+        })
+    },
+    getFotos (destino) {
+      this.loading = true
+      var getCode = this.arrDestination.find(arrDestination => arrDestination.name === destino);
+      console.log(getCode);
+      this.arrExcursiones = [];
+      this.$axios.get('shorex.json')
+        .then((response) => {
+          for (const key of response.data) {
+            if(key.code.substring(0,3) === getCode.code) {
+              this.arrExcursiones.push({
+                  title: key.title,
+                  image: key.imagePath
+              })
+            }
+          }
+          this.loading = false
+          console.log(this.arrExcursiones);
+        })
+        .catch((e) => {
+          console.log('error: ', e)
+        })
+    }
+  }
+}
+</script>
+
+<style lang="sass" scoped>
+.row > div
+  padding: 10px 15px
+
+.row + .row
+  margin-top: 1rem
+.my-card
+  width: 100%
+  max-width: 250px
+</style>
