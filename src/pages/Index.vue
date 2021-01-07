@@ -3,7 +3,7 @@
     <div class="q-pa-md">
       <div class="row">
         <div class="col">
-          <q-select rounded outlined v-model="model" :options="options"  @input="val => { getFotos(model) }" label="Seleccione un destino" />
+          <q-select rounded outlined v-model="model" :options="options" dark @input="val => { getFotos(model) }" label="Seleccione un destino" />
         </div>
       </div>
     </div>
@@ -18,21 +18,23 @@
       />
     </div>
 
-    <div class="q-pa-md row items-start q-gutter-md" v-show="model">
+    <div class="q-pa-md row items-start" v-show="model">
       <template v-for="excursion in arrExcursiones">
-        <q-card class="my-card">
+        <div class="col-3 no-padding">
           <q-img
+            spinner-size="2rem"
             :src="excursion.image"
-            basic
+            transition="scale"
+            class="excursion-image"
           >
-          </q-img>
-          <q-card-section>
-            {{ excursion.title }}
-          </q-card-section>
-        </q-card>
+            <div class="absolute-full text-subtitle2 flex flex-center excursion-title">
+              {{ excursion.title }}
+            </div>
+          </q-img>  
+        </div>
       </template>
     </div>
-    <div class="q-pa-md row items-center justify-center" v-if="model && arrExcursiones.length <= 0">
+    <div class="q-pa-md row items-center justify-center text-white" v-if="model && arrExcursiones.length <= 0">
       Sin excursiones...
     </div>
   </div>
@@ -109,4 +111,14 @@ export default {
 .my-card
   width: 100%
   max-width: 250px
+
+.excursion-image .excursion-title
+  visibility: hidden
+  opacity: 0
+  transition: .3s
+
+.excursion-image:hover .excursion-title
+  visibility: visible
+  opacity: 1
+  transition: .3s
 </style>
