@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-dark">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="bg-primary glossy text-white">
         <!-- <q-btn
           flat
           dense

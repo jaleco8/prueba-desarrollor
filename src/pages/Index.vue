@@ -35,7 +35,18 @@
       </template>
     </div>
     <div class="q-pa-md row items-center justify-center text-white" v-if="model && arrExcursiones.length <= 0">
-      Sin excursiones...
+      <div
+        class="absolute column items-center"
+        :style="{
+          opacity: 0.70,
+          top: 40 + '%',
+          left: 0,
+          right: 0
+        }"
+      >
+        <img src="../assets/sin-resultado.png" style="width: 250px; height: auto">
+        <div class="text-h3 text-white text-center">Sin excursiones...</div>
+      </div>
     </div>
   </div>
 </template>
